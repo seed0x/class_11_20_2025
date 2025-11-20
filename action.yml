@@ -1,0 +1,30 @@
+inputs:
+ args:
+  description: "additional ruff arguments"
+  required: false
+ src:
+  description: "Directories or files to check"
+  default: "."
+
+runs:
+  using: composite 
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.13"
+
+    - name: Install uv + ruff
+      shell: bash
+      run:  |
+        python -m pip install --upgrade pip uv
+        uv tool install ruff
+
+    - name: Run ruff
+      shell: bash
+      run:  |
+        echo "running Ruff on '${{ inputs.src }}' with args '${{ inputs.args }}'"
+        uvx ruff check \
+          --output-format=github \
+          ${{ inputs.args }} \
+          ${{ inputs.src }}
+          
